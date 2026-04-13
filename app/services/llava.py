@@ -3,7 +3,7 @@ from app.config import GROQ_API_KEY, SYSTEM_PROMPT, MAX_NEW_TOKENS, TEMPERATURE,
 
 client = Groq(api_key=GROQ_API_KEY)
 
-class LLaVAService:
+class VisionModelService:
     def describe(self, image_base64: str) -> str:
         response = client.chat.completions.create(
             model=MODEL_ID,
@@ -29,4 +29,5 @@ class LLaVAService:
         )
         return response.choices[0].message.content.strip()
 
-llava_service = LLaVAService()
+vision_service = VisionModelService()
+llava_service = vision_service

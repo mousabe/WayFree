@@ -1,7 +1,9 @@
 fastapi
-uvicorn
-python-dotenv
-requests
-pillow
-pydantic
 groq
+langchain-core
+langchain-groq
+pydantic
+python-dotenv
+python-socketio
+requests
+uvicorn

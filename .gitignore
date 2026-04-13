@@ -1,5 +1,6 @@
 # Environment
 .env
+client/.env
 venv/
 .venv/
 
@@ -27,11 +28,14 @@ Thumbs.db
 *.swp
 *.swo
 
-# Test images — contributors use their own
+# Frontend
+node_modules/
+
+# Local sample media
 test_image.jpg
-*.jpeg
-*.jpg
-*.png
+testimage.jpeg
+EEC7C182-2530-44A9-9272-338287411A20_1_105_c.jpeg
+local_samples/
 
 # Logs
 *.log

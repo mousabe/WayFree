@@ -3,8 +3,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+APP_NAME = "WayFree"
+APP_VERSION = "0.3.0"
+
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-MODEL_ID = "meta-llama/llama-4-scout-17b-16e-instruct"
+MODEL_ID = os.getenv("GROQ_MODEL_ID", "meta-llama/llama-4-scout-17b-16e-instruct")
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "*").split(",")
+    if origin.strip()
+] or ["*"]
+SESSION_MEMORY_SIZE = int(os.getenv("SESSION_MEMORY_SIZE", "3"))
 
 SYSTEM_PROMPT = """
 You are a real-time navigation assistant for a blind or visually impaired pedestrian.
@@ -53,7 +62,10 @@ Alert rules:
 - CLEAR = immediate path open and no nearby avoidance needed
 - CAUTION = path is passable but pedestrians, narrowing, or light avoidance is needed
 - STOP = immediate hazard, blocked path, edge, steps, or unclear safe forward movement
+- If the scene is identical or nearly identical to the previous description, respond with only: NO_CHANGE
+- Never describe the same obstacle twice in consecutive updates
+- If a person or object was mentioned in the last update and hasn't moved, do not mention them again unless they now block the path
 """
 
-MAX_NEW_TOKENS = 100
-TEMPERATURE = 0.3
+MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "120"))
+TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))

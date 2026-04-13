@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.services.llava import llava_service
-import requests
+
+from app.services.guidance import build_guidance_payload
+from app.services.llava import vision_service
 
 router = APIRouter(prefix="/vision", tags=["vision"])
 
@@ -10,15 +11,14 @@ class FrameRequest(BaseModel):
 
 class DescriptionResponse(BaseModel):
     description: str
+    alert_level: str
+    sections: dict[str, str]
+    summary: str
 
 @router.post("/describe", response_model=DescriptionResponse)
 async def describe_frame(req: FrameRequest):
     try:
-        description = llava_service.describe(req.image_base64)
-        return DescriptionResponse(description=description)
-    except requests.Timeout:
-        raise HTTPException(status_code=504, detail="LLaVA timed out — model may still be loading")
-    except requests.HTTPError as e:
-        raise HTTPException(status_code=502, detail=f"HuggingFace API error: {str(e)}")
+        description = vision_service.describe(req.image_base64)
+        return DescriptionResponse(**build_guidance_payload(description))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Vision model error: {str(e)}")
